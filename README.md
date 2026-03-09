@@ -1,14 +1,21 @@
 # Ai-Avatar-Interviewer
 An intelligent AI avatar interviewer that analyzes resumes, generates dynamic interview questions, and evaluates candidate performance in real-time using advanced AI models and conversational reasoning.
 # Tech Stack
-Frontend   -	(HTML, CSS, JavaScript)
-Backend    -	(Python, FastAPI)
-AI Engine  -	(Google Gemini API)
-Resume Processing -	(PyPDF2)
-Video Processing	- (OpenCV)
-Database	        - (MongoDB)
-Real-time Communication	 - (WebRTC)
-Deployment               -	(Render)
+1.Frontend   -	(HTML, CSS, JavaScript)
+
+2.Backend    -	(Python, FastAPI)
+
+3.AI Engine  -	(Google Gemini API)
+
+4.Resume Processing -	(PyPDF2)
+
+5.Video Processing	- (OpenCV)
+
+6.Database	        - (MongoDB)
+
+7.Real-time Communication	 - (WebRTC)
+
+8.Deployment               -	(Render)
 
 # Features
 
