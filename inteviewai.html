@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InterviewAI - Master Your Next Interview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' } } } }
+        }
+    </script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 font-sans leading-relaxed">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">
+                    <div class="bg-brand-600 p-2 rounded-lg text-white">
+                        <i data-lucide="bot" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-900">InterviewAI</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+        <div id="screen-home" class="fade-in max-w-2xl mx-auto text-center space-y-8 py-12">
+            <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Ready for your next big break?
+            </h1>
+            <p class="text-lg text-slate-600">Upload your resume and let our AI Avatar conduct a realistic 5-step
+                interview tailored to your skills.</p>
+
+            <div
+                class="bg-white p-8 rounded-2xl border-2 border-dashed border-slate-200 hover:border-brand-500 transition-colors group">
+                <i data-lucide="file-text"
+                    class="w-12 h-12 text-slate-400 mx-auto mb-4 group-hover:text-brand-500 transition-colors"></i>
+                <label class="block">
+                    <span class="sr-only">Choose Resume</span>
+                    <input type="file" id="resume-upload" accept=".pdf"
+                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer" />
+                </label>
+                <p class="mt-2 text-xs text-slate-400">PDF files only (Max 5MB)</p>
+            </div>
+
+            <button onclick="startInterview()"
+                class="w-full bg-brand-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-700 transition-all shadow-lg shadow-brand-200 flex items-center justify-center gap-2">
+                Start My Interview <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div id="screen-interview" class="hidden fade-in grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <div
+                    class="bg-slate-900 rounded-3xl aspect-video relative overflow-hidden shadow-2xl border-4 border-white">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div
+                                class="w-24 h-24 bg-brand-500 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse">
+                                <i data-lucide="bot" class="w-12 h-12 text-white"></i>
+                            </div>
+                            <p class="text-brand-400 font-medium tracking-widest uppercase text-sm">AI Interviewer Live
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-6 left-6 right-6 bg-black/40 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                        <p id="ai-question-text" class="text-white text-xl font-medium leading-relaxed italic">
+                            "Preparing your first question..."</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-center items-center gap-6">
+                    <button id="record-btn" onclick="toggleRecording()"
+                        class="p-6 rounded-full bg-red-500 text-white shadow-xl hover:bg-red-600 transition-all hover:scale-110">
+                        <i id="record-icon" data-lucide="mic" class="w-8 h-8"></i>
+                    </button>
+                    <p id="recording-status" class="text-slate-500 font-medium italic">Click the mic to answer</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="video"
+                            class="w-5 h-5 text-brand-600"></i> Your Camera</h3>
+                    <video id="user-video" autoplay muted
+                        class="w-full rounded-xl bg-slate-100 aspect-video object-cover"></video>
+                </div>
+                <div class="bg-brand-900 text-white p-6 rounded-2xl shadow-sm">
+                    <h3 class="font-bold mb-2">Interview Progress</h3>
+                    <div class="flex justify-between text-sm mb-2"><span id="step-label">Question 1 of 5</span> <span
+                            id="progress-percent">20%</span></div>
+                    <div class="w-full bg-brand-800 rounded-full h-2">
+                        <div id="progress-bar" class="bg-brand-400 h-2 rounded-full transition-all duration-500"
+                            style="width: 20%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-dashboard" class="hidden fade-in space-y-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold">Interview Analysis</h2>
+                <p class="text-slate-500">Based on your 5-step session</p>
+            </div>
+            <div class="bg-white p-12 rounded-3xl shadow-xl text-center max-w-2xl mx-auto border border-slate-100">
+                <div class="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span id="result-score" class="text-4xl font-black text-green-600">0/10</span>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">Well Done!</h3>
+                <p id="final-feedback-text" class="text-slate-600 mb-8 italic">Your performance has been analyzed and
+                    stored.</p>
+                <button onclick="location.reload()"
+                    class="bg-slate-900 text-white px-8 py-3 rounded-xl font-semibold">Start New Interview</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- GLOBAL STATE ---
+        let currentSessionId = null;
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // --- NAVIGATION ---
+        function navigate(screenId) {
+            ['home', 'interview', 'dashboard'].forEach(s => document.getElementById(`screen-${s}`).classList.add('hidden'));
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // --- CAMERA SETUP ---
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('user-video').srcObject = stream;
+            } catch (err) { console.error("Camera access denied", err); }
+        }
+
+        // --- 1. START INTERVIEW (RESUME UPLOAD) ---
+        async function startInterview() {
+            const fileInput = document.getElementById('resume-upload');
+            const file = fileInput.files[0];
+
+            if (!file) { alert("Please upload a PDF resume first!"); return; }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/upload-resume", { method: "POST", body: formData });
+                const data = await response.json();
+
+                currentSessionId = data.session_id;
+                document.getElementById('ai-question-text').innerText = data.question;
+
+                navigate('interview');
+                startCamera();
+                setupAudioRecording(); // Initialize microphone
+            } catch (error) {
+                alert("Could not connect to FastAPI. Is it running on port 8000?");
+            }
+        }
+
+        // --- 2. AUDIO RECORDING LOGIC ---
+        async function setupAudioRecording() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                audioChunks = [];
+                await submitAnswer(audioBlob);
+            };
+        }
+
+        function toggleRecording() {
+            if (!isRecording) {
+                mediaRecorder.start();
+                isRecording = true;
+                document.getElementById('record-btn').classList.replace('bg-red-500', 'bg-slate-900');
+                document.getElementById('record-icon').innerHTML = '<i data-lucide="square" class="w-8 h-8 text-white"></i>';
+                document.getElementById('recording-status').innerText = "Listening... Click to stop";
+                lucide.createIcons();
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                document.getElementById('record-btn').classList.replace('bg-slate-900', 'bg-red-500');
+                document.getElementById('record-icon').innerHTML = '<i data-lucide="mic" class="w-8 h-8 text-white"></i>';
+                document.getElementById('recording-status').innerText = "Processing answer...";
+                lucide.createIcons();
+            }
+        }
+
+        // --- 3. SUBMIT ANSWER & GET NEXT QUESTION ---
+        async function submitAnswer(audioBlob) {
+            const formData = new FormData();
+            formData.append("session_id", currentSessionId);
+            formData.append("audio_file", audioBlob);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/submit-answer", { method: "POST", body: formData });
+                const data = await response.json();
+
+                if (data.is_complete) {
+                    finishInterview(data.evaluation);
+                } else {
+                    // Update UI for Next Question
+                    document.getElementById('ai-question-text').innerText = data.next_question;
+                    document.getElementById('step-label').innerText = `Question ${data.next_step} of 5`;
+                    document.getElementById('progress-bar').style.width = `${(data.next_step) * 20}%`;
+                    document.getElementById('progress-percent').innerText = `${(data.next_step) * 20}%`;
+                    document.getElementById('recording-status').innerText = "Click to answer";
+
+                    // Play AI Voice
+                    if (data.audio_url) {
+                        const audio = new Audio(`http://127.0.0.1:8000${data.audio_url}`);
+                        audio.play();
+                    }
+                }
+            } catch (err) { console.error("Submit error", err); }
+        }
+
+        // --- 4. FINISH & RESULTS ---
+        function finishInterview(evalData) {
+            navigate('dashboard');
+            document.getElementById('result-score').innerText = evalData.score + "/10";
+
+            // Stop Camera
+            const video = document.getElementById('user-video');
+            if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
+        }
+
+        window.onload = () => lucide.createIcons();
+    </script>
+</body>
+
+</html>
